@@ -31,7 +31,7 @@
                 android:value="jp.techacademy.taiga.miyazaki.taskapp.MainActivity"/>
         </activity>
 
-        <receiver android:name=".TaskAlarmReceiver "/>
+        <receiver android:name=".TaskAlarmReceiver"/>
 
     </application>
 

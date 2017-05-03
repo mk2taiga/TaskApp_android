@@ -20,7 +20,7 @@ public class Task extends RealmObject implements Serializable{
         return category;
     }
     //カテゴリー追加
-    public void setCategory() {
+    public void setCategory(String category) {
         this.category = category;
     }
 

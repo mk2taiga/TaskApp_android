@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.content.Intent;
 import android.app.AlarmManager;
@@ -33,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
 
+    //検索用のボタンと検索用のEditText
+    EditText searchEdit;
+    Button searchButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MainActivity.this, InputActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -54,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
         // ListViewの設定
         mTaskAdapter = new TaskAdapter(MainActivity.this);
         mListView = (ListView) findViewById(R.id.listView1);
+
+        //検索ボタンを押した時の処理
+        searchButton = (Button) findViewById(R.id.search_button);
+        searchEdit = (EditText) findViewById(R.id.search_bar);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (searchEdit != null) {
+                    searchListView();
+                }else {
+                    reloadListView();
+                }
+            }
+        });
 
         // ListViewをタップしたときの処理
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
                 // タスクを削除する
 
                 final Task task = (Task) parent.getAdapter().getItem(position);
+
                 // ダイアログを表示する
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
                 builder.setTitle("削除");
                 builder.setMessage(task.getTitle() + "を削除しますか");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -102,19 +124,29 @@ public class MainActivity extends AppCompatActivity {
                         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                         alarmManager.cancel(resultPendingIntent);
 
-
                         reloadListView();
                     }
                 });
-
                 builder.setNegativeButton("CANCEL", null);
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
+
                 return true;
             }
         });
+
         reloadListView();
+    }
+
+    //検索条件を絞り込むメソッド
+    private void searchListView() {
+        searchEdit = (EditText) findViewById(R.id.search_bar);
+        String resultTitle = searchEdit.getText().toString();
+        RealmResults<Task> taskRealmResults = mRealm.where(Task.class).contains("title", resultTitle).findAllSorted("date", Sort.DESCENDING);
+        mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
+        mListView.setAdapter(mTaskAdapter);
+        mTaskAdapter.notifyDataSetChanged();
     }
 
     private void reloadListView() {

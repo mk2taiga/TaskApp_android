@@ -151,11 +151,11 @@ public class InputActivity extends AppCompatActivity {
 
         String title = mTitleEdit.getText().toString();
         String content = mContentEdit.getText().toString();
-        String category = mCategoryEdit.getText().toString();
+        String category = mCategoryEdit.getText().toString(); //カテゴリーのテキスト保存
 
         mTask.setTitle(title);
         mTask.setContents(content);
-        mTask.setCategory(category);
+        mTask.setCategory(category); //カテゴリーをセットする
         GregorianCalendar calendar = new GregorianCalendar(mYear,mMonth,mDay,mHour,mMinute);
         Date date = calendar.getTime();
         mTask.setDate(date);
