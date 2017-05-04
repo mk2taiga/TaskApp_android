@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
                 builder.setTitle("削除");
-                builder.setMessage(task.getTitle() + "を削除しますか");
+                builder.setMessage(task.getCategory() + "を削除しますか");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
     //検索条件を絞り込むメソッド
     private void searchListView() {
         searchEdit = (EditText) findViewById(R.id.search_bar);
-        String resultTitle = searchEdit.getText().toString();
-        RealmResults<Task> taskRealmResults = mRealm.where(Task.class).contains("title", resultTitle).findAllSorted("date", Sort.DESCENDING);
+        String resultCategory = searchEdit.getText().toString();
+        RealmResults<Task> taskRealmResults = mRealm.where(Task.class).contains("category", resultCategory).findAllSorted("date", Sort.DESCENDING);
         mTaskAdapter.setTaskList(mRealm.copyFromRealm(taskRealmResults));
         mListView.setAdapter(mTaskAdapter);
         mTaskAdapter.notifyDataSetChanged();
